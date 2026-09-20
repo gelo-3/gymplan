@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.webmanifest">
+<title>GymPlan v7</title>
+<style>
+:root{--bg:#f3f5f8;--card:#fff;--text:#101828;--muted:#667085;--line:#e4e7ec;--a:#2563eb;--green:#16a34a;--red:#dc2626}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}header{position:sticky;top:0;z-index:10;background:#0f172a;color:white;padding:14px max(14px,calc((100% - 960px)/2));box-shadow:0 2px 12px #0003}.bar{display:flex;justify-content:space-between;align-items:center;gap:10px}h1{margin:0;font-size:20px}h2{margin:0 0 12px;font-size:18px}h3{margin:0 0 5px;font-size:16px}.sub{font-size:12px;color:#cbd5e1}
+main{max-width:960px;margin:auto;padding:16px 13px 90px}.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:13px}.tab,.filter{border:0;border-radius:12px;padding:10px 13px;background:white;font-weight:800;white-space:nowrap}.tab.active,.filter.active{background:var(--a);color:#fff}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 7px 22px #0000000b}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+label{font-weight:750;font-size:13px;color:#344054}input,select,textarea{width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:10px;background:#fff;font:inherit;margin-top:5px}textarea{min-height:80px}button{border:0;border-radius:11px;padding:10px 13px;font-weight:800;background:#eef2f6;color:var(--text);cursor:pointer}.primary{background:var(--a);color:#fff}.success{background:var(--green);color:#fff}.danger{background:#fee2e2;color:#991b1b}.muted{color:var(--muted)}.tiny{font-size:12px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.stat{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fafafa}.stat b{display:block;font-size:21px}.day{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:10px 0}.dayhead{padding:13px;background:#f8fafc;display:flex;justify-content:space-between;gap:8px}.exercise{padding:13px;border-top:1px solid var(--line)}.exercise.done{opacity:.55}.pill{font-size:11px;background:#e8eefc;color:#1d4ed8;border-radius:999px;padding:4px 8px;font-weight:800}.progress{height:9px;background:#e5e7eb;border-radius:99px;overflow:hidden}.progress i{height:100%;display:block;background:var(--a);width:0}.sets{width:100%;border-collapse:collapse;margin-top:9px}.sets th,.sets td{border-bottom:1px solid var(--line);padding:6px 3px;text-align:center}.sets input{margin:0;padding:7px;text-align:center}.sets .check{width:20px;height:20px}.hidden{display:none!important}.notice{padding:11px;border-radius:12px;background:#eff6ff;color:#1e40af}.warning{padding:11px;border-radius:12px;background:#fff7ed;color:#9a3412}.timer{position:fixed;z-index:30;bottom:15px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:13px 16px;border-radius:18px;min-width:290px;text-align:center;box-shadow:0 12px 40px #0005}.timer strong{font-size:30px}.timer button{background:#334155;color:white;margin:4px}.tag{display:inline-block;padding:5px 8px;border-radius:999px;background:#f2f4f7;margin:3px;font-size:12px}.coach{border-left:4px solid var(--a);padding:11px;background:#f8fafc;border-radius:9px}.checkline{display:flex;align-items:center;gap:8px;padding:8px 0}.checkline input{width:auto;margin:0}
+@media(max-width:600px){.grid4{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(3,1fr)}.card{border-radius:15px}}
+</style>
+
+<style>
+.gp-next-card{margin:14px 0;padding:16px;border:1px solid rgba(127,127,127,.28);border-radius:16px;background:rgba(127,127,127,.08)}
+.gp-next-card h3{margin:0 0 6px}
+.gp-next-card p{margin:4px 0 12px;opacity:.82}
+.gp-next-btn{width:100%;padding:12px 14px;border:0;border-radius:12px;font-weight:700;cursor:pointer}
+.gp-small-btn{margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(127,127,127,.35);background:transparent;cursor:pointer}
+</style>
+
+
+<style>
+:root{--bg:#07111f;--card:#0c1a2b;--text:#f8fafc;--muted:#9fb0c3;--line:#1e3550;--a:#168cff;--a2:#7c4dff;--green:#16c784}
+body{background:radial-gradient(circle at 20% -10%,#123052 0,#07111f 36%,#050b14 100%);color:var(--text)}
+header{background:rgba(5,12,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid #1d3550}
+.card,.day,.stat{background:linear-gradient(145deg,#0d1c2e,#091525);border-color:#1d3855;box-shadow:0 12px 30px #0006}
+.tab,.filter,button{background:#12243a;color:#e7eef7;border:1px solid #24415e}.tab.active,.filter.active,.primary{background:linear-gradient(135deg,#087ff5,#6d45ff);border:0}
+.dayhead{background:#10243a}.exercise{border-color:#1d3855}
+.exercise-visual{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:center}
+.exercise-thumb{width:92px;height:74px;object-fit:cover;border-radius:14px;border:1px solid #315274;background:#07111f;cursor:pointer}
+.exercise-title{font-size:16px;margin:0 0 4px}.equip-badge{display:inline-flex;gap:5px;align-items:center;color:#9fd3ff;font-size:11px;font-weight:800}
+.alt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.alt-card{border:1px solid #294867;border-radius:14px;overflow:hidden;background:#091728;cursor:pointer}
+.alt-card img{width:100%;height:76px;object-fit:cover;display:block}.alt-card div{padding:8px;font-size:12px;font-weight:800}
+.exercise-detail{margin-top:10px;padding-top:10px;border-top:1px solid #1c3650}
+details{background:#0a1727;border:1px solid #1b3550;border-radius:12px;padding:9px;margin-top:8px}
+details summary{cursor:pointer;font-weight:800}
+.visual-hero{width:100%;max-height:280px;object-fit:cover;border-radius:16px;border:1px solid #294867}
+.modal-bg{position:fixed;inset:0;background:#000b;z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.modal{width:min(700px,100%);max-height:92vh;overflow:auto;background:#091525;border:1px solid #315274;border-radius:22px;padding:16px;box-shadow:0 25px 70px #000b}
+.modal-close{float:right;background:#172a40;border-radius:50%;width:38px;height:38px;padding:0}
+@media(max-width:560px){.alt-grid{grid-template-columns:repeat(3,1fr)}.exercise-visual{grid-template-columns:82px 1fr}.exercise-thumb{width:82px;height:68px}}
+</style>
+</head>
+<body><div style='position:sticky;top:0;z-index:99;background:#111827;color:#fff;padding:8px;text-align:center;font:600 13px system-ui'>GymPlan V5 · Treinador digital: camada de coach, metas, check-ins e sugestões adaptativas.</div>
+<header><div class="bar"><div><h1>🏋️ GymPlan v3</h1><div class="sub">Plano personalizado • progressão • coach</div></div><button id="install" class="primary hidden">Instalar</button></div></header>
+<main>
+<div class="tabs">
+<button class="tab active" data-tab="home">Hoje</button><button class="tab" data-tab="builder">Meu plano</button><button class="tab" data-tab="library">Exercícios</button><button class="tab" data-tab="progress">Progresso</button><button class="tab" data-tab="settings">Definições</button>
+</div>
+
+<section id="home">
+<div class="card"><div class="row between"><div><h2 id="todayTitle">O teu treino</h2><div id="todayMeta" class="muted"></div></div><button class="primary" id="openToday">Abrir treino</button></div><div style="margin-top:12px" class="progress"><i id="todayBar"></i></div><div class="tiny muted" id="todayProgress"></div></div>
+<div class="card"><h2>Coach GymPlan</h2><div id="coachAdvice" class="coach"></div></div>
+<div class="card"><h2>Resumo</h2><div class="grid3"><div class="stat"><span class="tiny muted">Treinos</span><b id="sW">0</b></div><div class="stat"><span class="tiny muted">Volume</span><b id="sV">0</b><span class="tiny muted">kg</span></div><div class="stat"><span class="tiny muted">Streak</span><b id="sS">0</b></div></div></div>
+<div id="todayExercises"></div>
+</section>
+
+<section id="builder" class="hidden">
+<div class="card"><h2>👤 Perfil de treino</h2><p class="muted">Quanto mais informação deres, mais específico fica o plano. Estes dados ficam apenas neste dispositivo.</p>
+<div class="grid">
+<label>Nome (opcional)<input id="name" placeholder="Ex.: João"></label>
+<label>Idade<input id="age" type="number" min="13" max="100" placeholder="30"></label>
+<label>Altura (cm)<input id="height" type="number" min="120" max="230" placeholder="175"></label>
+<label>Peso (kg)<input id="weight" type="number" min="35" max="250" placeholder="75"></label>
+<label>Sexo<select id="sex"><option value="unspecified">Prefiro não indicar</option><option value="male">Masculino</option><option value="female">Feminino</option></select></label>
+<label>Experiência<select id="level"><option value="beginner">Iniciante</option><option value="intermediate">Intermédio</option><option value="advanced">Avançado</option></select></label>
+<label>Objetivo<select id="goal"><option value="muscle">Ganhar massa muscular</option><option value="strength">Ganhar força</option><option value="fat">Perder gordura</option><option value="fitness">Fitness geral</option></select></label>
+<label>Dias/semana<select id="days"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select></label>
+<label>Duração<select id="duration"><option>30</option><option>45</option><option selected>60</option><option>75</option><option>90</option></select></label>
+<label>Equipamento<select id="equipment"><option value="full">Ginásio completo</option><option value="basic">Máquinas + pesos</option><option value="home">Casa</option></select></label>
+</div></div>
+<div class="card"><h2>❤️ Preferências e limitações</h2>
+<label>Exercícios que gostas (opcional)<textarea id="likes" placeholder="Ex.: supino, remada, agachamento..."></textarea></label>
+<label>Exercícios que queres evitar (opcional)<textarea id="avoid" placeholder="Ex.: corrida, agachamento com barra..."></textarea></label>
+<label>Limitações ou zonas a proteger (opcional)<textarea id="limits" placeholder="Ex.: evitar movimentos acima da cabeça..."></textarea></label>
+<div class="warning">Se tens uma lesão, dor persistente ou condição médica, usa este campo apenas como preferência e confirma o treino com um profissional de saúde/treino.</div>
+</div>
+<div class="card"><h2>⚙️ Regras de progressão</h2><div class="grid">
+<label>Esforço alvo<select id="rir"><option value="3">RIR 3 — confortável</option><option value="2" selected>RIR 2 — moderado</option><option value="1">RIR 1 — difícil</option></select></label>
+<label>Progressão<select id="progression"><option value="double" selected>Reps → carga</option><option value="load">Carga gradual</option><option value="reps">Repetições primeiro</option></select></label>
+</div><p class="muted tiny">RIR = repetições que ainda conseguirias fazer com boa técnica. A app sugere progressão; não substitui o teu julgamento sobre técnica e dor.</p></div>
+<div class="card"><button class="primary" id="generate" style="width:100%">✨ Criar / atualizar o meu plano</button></div>
+<div id="planList"></div>
+</section>
+
+<section id="library" class="hidden"><div class="card"><h2>Biblioteca</h2><input id="search" placeholder="Pesquisar exercício, músculo ou equipamento"><div class="row" style="margin-top:8px"><button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="push">Empurrar</button><button class="filter" data-filter="pull">Puxar</button><button class="filter" data-filter="legs">Pernas</button><button class="filter" data-filter="core">Core</button></div></div><div id="libraryList"></div></section>
+
+<section id="progress" class="hidden"><div class="card"><h2>📈 Progresso</h2><div class="grid4"><div class="stat"><span class="tiny muted">Treinos</span><b id="pW">0</b></div><div class="stat"><span class="tiny muted">Volume</span><b id="pV">0</b><span class="tiny muted">kg</span></div><div class="stat"><span class="tiny muted">Streak</span><b id="pS">0</b></div><div class="stat"><span class="tiny muted">Exercícios</span><b id="pE">0</b></div></div></div><div class="card"><h2>🏆 Recordes</h2><div id="prs"></div></div><div class="card"><h2>Histórico</h2><div id="history"></div></div></section>
+
+<section id="settings" class="hidden"><div class="card"><h2>Dados</h2><p class="muted">Tudo é guardado localmente. Faz backup antes de trocar de dispositivo.</p><div class="row"><button id="export">Exportar backup</button><label><input id="import" type="file" accept=".json" hidden><button onclick="document.getElementById('import').click()">Importar backup</button></label><button class="danger" id="wipe">Apagar tudo</button></div></div></section>
+</main>
+<div id="timer" class="timer hidden"><div>Descanso</div><strong id="time">01:30</strong><div><button id="minus">−30s</button><button id="pause">Pausar</button><button id="plus">+30s</button><button id="closeTimer">Fechar</button></div></div>
+
+
+<script>
+/* GymPlan v5.3 — sequential workout flow */
+(function(){
+  const FLOW_KEY = 'gymplan_next_workout_v53';
+  window.GymPlanFlow = {
+    load(){
+      try { return JSON.parse(localStorage.getItem(FLOW_KEY) || '{"next":0,"done":0}'); }
+      catch(e){ return {next:0,done:0}; }
+    },
+    save(v){ localStorage.setItem(FLOW_KEY, JSON.stringify(v)); },
+    reset(){ this.save({next:0,done:0}); },
+    nextIndex(total){
+      const s=this.load();
+      return total ? (Number(s.next)||0) % total : 0;
+    },
+    advance(total){
+      const s=this.load();
+      s.next = total ? ((Number(s.next)||0)+1)%total : 0;
+      s.done = (Number(s.done)||0)+1;
+      this.save(s);
+      return s;
+    }
+  };
+})();
+</script>
+
+<script>
+const KEY='gymplan-v3';
+const EX=[
+['bench','Supino com barra','Peito • tríceps • ombros','push','full',3,6,10,120,'Deita-te com os pés firmes. Desce a barra de forma controlada ao meio do peito e empurra mantendo as escápulas estáveis.','Levantar os glúteos, perder controlo ou abrir demasiado os cotovelos.','Chest press na máquina ou flexões.'],
+['incline','Supino inclinado com halteres','Peito superior • ombros • tríceps','push','full',3,8,12,90,'Banco a cerca de 30°. Desce os halteres com controlo e sobe mantendo pulsos neutros.','Banco demasiado inclinado ou amplitude curta.','Chest press inclinado.'],
+['row','Remada sentada na polia','Costas • bíceps','pull','full',3,8,12,90,'Puxa o pegador para a zona inferior das costelas sem balançar o tronco.','Usar impulso ou puxar apenas com os braços.','Remada com halter ou máquina.'],
+['lat','Puxada na polia alta','Dorsais • bíceps','pull','full',3,8,12,90,'Peito alto, puxa a barra à parte superior do peito e controla a subida.','Puxar atrás da nuca ou balançar.','Pull-up assistido.'],
+['squat','Agachamento','Quadríceps • glúteos • core','legs','full',3,6,10,120,'Pés estáveis, joelhos acompanham os pés. Desce com controlo e sobe pressionando o chão.','Perder estabilidade ou deixar joelhos colapsarem.','Leg press ou goblet squat.'],
+['legpress','Leg press','Quadríceps • glúteos','legs','basic',3,10,15,90,'Mantém costas apoiadas, desce controladamente e empurra sem bloquear agressivamente os joelhos.','Retirar a lombar do apoio.','Goblet squat.'],
+['rdl','Peso morto romeno','Posteriores • glúteos','legs','full',3,8,12,120,'Leva as ancas para trás com joelhos ligeiramente fletidos e coluna neutra.','Arredondar a lombar ou agachar em vez de fazer hinge.','Pull-through ou RDL com halteres.'],
+['shoulder','Press de ombros','Ombros • tríceps','push','full',3,8,12,90,'Halteres à altura dos ombros; empurra verticalmente sem arquear excessivamente.','Usar impulso ou carga que altera a trajetória.','Shoulder press máquina.'],
+['curl','Curl de bíceps','Bíceps','pull','basic',3,10,15,60,'Cotovelos junto ao corpo, sobe e desce sem balançar.','Impulso ou cotovelos a avançar.','Curl na polia.'],
+['tri','Extensão de tríceps na polia','Tríceps','push','basic',3,10,15,60,'Cotovelos fixos; empurra para baixo e regressa lentamente.','Mexer os ombros ou usar o corpo.','Tríceps com halter.'],
+['calf','Elevação de gémeos','Gémeos','legs','basic',3,12,20,60,'Sobe com controlo, pausa no topo e desce até alongar.','Movimento rápido e curto.','Gémeos no leg press.'],
+['plank','Prancha','Core','core','home',3,30,60,60,'Cotovelos sob ombros, corpo em linha, abdómen contraído e respiração normal.','Lombar a afundar ou bacia demasiado alta.','Dead bug.'],
+['pushup','Flexões','Peito • tríceps • ombros','push','home',3,8,15,75,'Corpo em linha, desce o peito e empurra o chão.','Anca a cair ou cotovelos excessivamente abertos.','Flexões inclinadas ou chest press.'],
+['goblet','Agachamento goblet','Quadríceps • glúteos • core','legs','home',3,10,15,75,'Segura a carga junto ao peito e desce mantendo o tronco firme.','Calcanhares a levantar ou joelhos a colapsar.','Agachamento livre.'],
+['deadbug','Dead bug','Core • estabilidade','core','home',3,8,12,60,'Deitado, mantém lombar controlada e estende braço/perna opostos.','Acelerar ou perder posição da lombar.','Prancha.']
+].map(a=>({id:a[0],name:a[1],muscles:a[2],group:a[3],equip:a[4],sets:a[5],min:a[6],max:a[7],rest:a[8],how:a[9],mistakes:a[10],alt:a[11]}));
+
+const GUIDE={
+bench:{setup:'Ajusta o banco, deita-te com os olhos ligeiramente atrás da barra e mantém os pés firmes no chão.',steps:'Retira a barra com os braços estendidos. Baixa-a devagar em direção à parte média/inferior do peito, toca ou aproxima sem bater, e empurra de volta sem perder a posição das escápulas.',breathing:'Inspira antes da descida e expira ao empurrar.',cues:'Mantém os punhos neutros, escápulas apoiadas e cotovelos num ângulo confortável, sem os abrir excessivamente.'},
+incline:{setup:'Coloca o banco a cerca de 20–35° e posiciona os halteres sobre as coxas antes de te deitares.',steps:'Leva os halteres à posição inicial, baixa-os de forma controlada até junto do peito e volta a subir sem juntar os pesos com força.',breathing:'Inspira na descida e expira na subida.',cues:'Mantém peito aberto, ombros para trás e para baixo e evita transformar o movimento num press de ombros.'},
+row:{setup:'Senta-te com os pés apoiados e escolhe um pegador que permita uma trajetória confortável.',steps:'Começa com os braços estendidos. Puxa o pegador para a zona das costelas, aproxima as omoplatas e regressa lentamente sem deixar o tronco balançar.',breathing:'Expira ao puxar e inspira ao voltar.',cues:'Pensa em levar os cotovelos para trás; não tentes compensar com balanço do corpo.'},
+lat:{setup:'Ajusta o apoio das pernas e segura a barra ligeiramente mais larga que os ombros.',steps:'Com o peito alto, puxa a barra em direção à parte superior do peito. Faz uma pequena pausa e controla o regresso até os braços ficarem quase estendidos.',breathing:'Expira na puxada e inspira na subida.',cues:'Não puxes a barra atrás da nuca e evita inclinar demasiado o tronco.'},
+squat:{setup:'Pés aproximadamente à largura dos ombros, pontas ligeiramente para fora e peso distribuído por todo o pé.',steps:'Faz uma inspiração, leva as ancas para trás e para baixo e desce até uma profundidade que consigas controlar mantendo a posição. Depois empurra o chão para subir.',breathing:'Inspira antes da descida e expira ao subir.',cues:'Os joelhos acompanham a direção dos dedos dos pés; mantém o tronco firme e o pé inteiro apoiado.'},
+legpress:{setup:'Encosta bem costas e bacia ao apoio e coloca os pés numa posição confortável na plataforma.',steps:'Desbloqueia o carro, baixa-o devagar até uma amplitude confortável sem arredondar a lombar e empurra a plataforma de volta.',breathing:'Inspira na descida e expira ao empurrar.',cues:'Não deixes a bacia levantar do banco e não bloqueies os joelhos de forma agressiva no topo.'},
+rdl:{setup:'Segura a barra ou halteres junto às coxas, pés estáveis e joelhos ligeiramente fletidos.',steps:'Empurra as ancas para trás mantendo a carga próxima das pernas. Desce até sentires alongamento nos posteriores sem perder a coluna neutra e volta a trazer as ancas para a frente.',breathing:'Inspira na descida e expira ao terminar a extensão das ancas.',cues:'É um movimento de dobradiça da anca, não um agachamento; mantém a carga perto do corpo.'},
+shoulder:{setup:'Senta-te com costas apoiadas e coloca os halteres à altura dos ombros.',steps:'Empurra os halteres para cima numa trajetória confortável, sem bater um no outro, e baixa-os lentamente.',breathing:'Expira ao empurrar e inspira ao descer.',cues:'Mantém as costelas controladas e evita arquear excessivamente a lombar.'},
+curl:{setup:'Fica de pé com os braços ao lado do corpo e pega confortável.',steps:'Flexiona os cotovelos levando as mãos para cima sem mexer os ombros. Aperta ligeiramente o bíceps e baixa o peso de forma controlada.',breathing:'Expira ao subir e inspira ao descer.',cues:'Mantém os cotovelos relativamente fixos e usa uma carga que não obrigue a balançar o tronco.'},
+tri:{setup:'Regula a polia e segura a corda ou barra com os cotovelos junto ao tronco.',steps:'Empurra o acessório para baixo até estender os cotovelos sem os bloquear com violência. Volta lentamente à posição inicial.',breathing:'Expira ao empurrar e inspira ao regressar.',cues:'O movimento deve acontecer sobretudo no cotovelo; evita transformar o exercício num balanço do ombro.'},
+calf:{setup:'Coloca a parte da frente dos pés numa superfície estável e segura-te para equilíbrio.',steps:'Baixa os calcanhares de forma controlada, sobe o máximo que conseguires sem perder estabilidade e faz uma pequena pausa no topo.',breathing:'Respira normalmente, evitando prender a respiração.',cues:'Usa amplitude controlada e não saltes para ganhar impulso.'},
+plank:{setup:'Apoia os antebraços com os cotovelos por baixo dos ombros e estende as pernas.',steps:'Contrai abdómen e glúteos, mantém o corpo alinhado e segura a posição sem deixar a lombar afundar.',breathing:'Respira de forma lenta e contínua.',cues:'Qualidade é mais importante que tempo; termina a série quando já não conseguires manter a posição.'},
+pushup:{setup:'Coloca as mãos ligeiramente mais largas que os ombros e cria uma linha entre cabeça, tronco e pernas.',steps:'Baixa o corpo como um bloco, mantendo os cotovelos num ângulo confortável, e empurra o chão para regressar.',breathing:'Inspira na descida e expira ao subir.',cues:'Evita deixar a anca cair e não precisas de levar os cotovelos totalmente para os lados.'},
+goblet:{setup:'Segura um halter ou kettlebell junto ao peito, com os cotovelos apontados para baixo.',steps:'Desce entre as ancas mantendo o peito firme e os pés apoiados. Sobe pressionando o chão.',breathing:'Inspira na descida e expira ao subir.',cues:'Mantém a carga próxima do corpo e deixa os joelhos acompanhar os pés.'},
+deadbug:{setup:'Deita-te de costas, ancas e joelhos a cerca de 90° e braços apontados para cima.',steps:'Baixa lentamente um braço e a perna oposta sem deixar a lombar perder contacto controlado com o chão. Volta e troca os lados.',breathing:'Expira durante a extensão e inspira no regresso.',cues:'Move devagar; reduz a amplitude se a lombar começar a arquear.'}
+};
+
+const old=JSON.parse(localStorage.getItem(KEY)||'null');
+let state=old||{profile:{name:'',age:'',height:'',weight:'',sex:'unspecified',level:'beginner',goal:'muscle',days:4,duration:60,equipment:'full',likes:'',avoid:'',limits:'',rir:2,progression:'double'},plan:[],logs:[],completed:{},weights:{},reps:{},sessions:{}};
+let tab='home',filter='all',timer=90,interval=null;
+const by=id=>EX.find(e=>e.id===id);
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function today(){return new Date().toISOString().slice(0,10)}
+function label(d){return new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function tokens(s){return String(s||'').toLowerCase().split(/[,\n;]+/).map(x=>x.trim()).filter(Boolean)}
+function excluded(e){const a=tokens(state.profile.avoid+' '+state.profile.limits);return a.some(x=>e.name.toLowerCase().includes(x)||e.muscles.toLowerCase().includes(x))}
+function pool(){let p=EX.filter(e=>state.profile.equipment==='full'||e.equip==='home'||(state.profile.equipment==='basic'&&e.equip!=='home'));return p.filter(e=>!excluded(e))}
+function setsFor(e){let mult=state.profile.level==='beginner'?.8:state.profile.level==='advanced'?1.15:1;return Math.max(2,Math.min(4,Math.round(e.sets*mult)))}
+function generate(){
+ const p=state.profile,n=Math.max(2,Math.min(6,+p.days||4)),available=pool();
+ const preferred=tokens(p.likes);
+ function choose(groups,count,used){
+   let arr=available.filter(e=>groups.includes(e.group)&&!used.has(e.id));
+   arr.sort((a,b)=>{
+     const ap=preferred.some(x=>a.name.toLowerCase().includes(x))?1:0;
+     const bp=preferred.some(x=>b.name.toLowerCase().includes(x))?1:0;
+     return bp-ap;
+   });
+   return arr.slice(0,count);
+ }
+ const templates={
+  2:[['Parte de cima',['push','pull','push','pull','core']],['Pernas',['legs','legs','legs','core']]],
+  3:[['Parte de cima',['push','pull','push','pull','core']],['Pernas',['legs','legs','legs','core']],['Corpo inteiro',['legs','push','pull','core']]],
+  4:[['Parte de cima A',['push','pull','push','pull','core']],['Pernas A',['legs','legs','legs','core']],['Parte de cima B',['push','pull','push','pull','core']],['Pernas B',['legs','legs','legs','core']]],
+  5:[['Parte de cima',['push','pull','push','pull','core']],['Pernas',['legs','legs','legs','core']],['Empurrar — peito/ombros/tríceps',['push','push','push','push']],['Puxar — costas/bíceps',['pull','pull','pull','pull']],['Pernas B',['legs','legs','legs','core']]],
+  6:[['Parte de cima A',['push','pull','push','pull','core']],['Pernas A',['legs','legs','legs','core']],['Empurrar',['push','push','push','push']],['Puxar',['pull','pull','pull','pull']],['Pernas B',['legs','legs','legs','core']],['Parte de cima B',['push','pull','push','pull','core']]]
+ }[n];
+ state.plan=templates.map((t,i)=>{
+   let used=new Set(),ex=[];
+   for(const g of t[1]){
+     const picked=choose([g],1,used)[0];
+     if(picked){used.add(picked.id);ex.push(picked.id)}
+   }
+   return {day:i+1,name:t[0],exercises:ex.map(id=>({id,sets:setsFor(by(id)),min:by(id).min,max:by(id).max,rest:by(id).rest}))};
+ });
+}
+function profileFromUI(){let p=state.profile;['name','age','height','weight','sex','level','goal','days','duration','equipment','likes','avoid','limits','rir','progression'].forEach(k=>{const el=document.getElementById(k);if(el)p[k]=el.value});p.days=+p.days;p.duration=+p.duration;p.rir=+p.rir}
+function renderBuilder(){let p=state.profile;['name','age','height','weight','sex','level','goal','days','duration','equipment','likes','avoid','limits','rir','progression'].forEach(k=>{let e=document.getElementById(k);if(e)e.value=p[k]})}
+function stats(){let w=state.logs.length,v=state.logs.reduce((a,x)=>a+x.volume,0),s=state.logs.reduce((a,x)=>a+x.sets,0),d=[...new Set(state.logs.map(x=>x.date))].sort().reverse(),st=0,dt=new Date();for(let i=0;i<365;i++){let k=dt.toISOString().slice(0,10);if(d.includes(k)){st++;dt.setDate(dt.getDate()-1)}else break}return{w,v,s,st}}
+function advice(){let s=stats(), last=state.logs[0];if(!state.plan.length)return'Preenche o teu perfil e cria o primeiro plano.';if(!last)return'Começa com cargas que permitam cumprir a faixa de repetições com boa técnica. Quando atingires o topo da faixa em todas as séries, a app pode sugerir subir a carga.';let good=last.entries.filter(x=>x.reps>=x.max).length;if(good)return`No último treino atingiste o topo da faixa em ${good} exercício(s). Na próxima sessão, considera aumentar ligeiramente a carga e voltar ao início da faixa.`;return`Mantém as cargas e tenta acrescentar 1 repetição onde a técnica continuar sólida. O objetivo é progredir gradualmente.`}
+function exCard(item,date){let e=by(item.id),g=GUIDE[e.id]||{},done=!!state.completed[date+'_'+e.id],w=state.weights[e.id]||'', rr=state.reps[date+'_'+e.id]||{};let rows=Array.from({length:item.sets},(_,i)=>`<tr><td>${i+1}</td><td><input data-w="${e.id}" value="${w}" inputmode="decimal" placeholder="kg"></td><td><input data-r="${date}_${e.id}_${i}" value="${rr[i]||''}" inputmode="numeric" placeholder="${item.min}-${item.max}"></td><td><input class="check" type="checkbox" data-check="${date}_${e.id}" ${done?'checked':''}></td></tr>`).join('');return `<div class="day"><div class="exercise ${done?'done':''}"><div class="row between"><div><h3>${e.name}</h3><div class="muted tiny">${e.muscles}</div></div><span class="pill">${item.min}-${item.max} reps • ${item.rest}s</span></div><details open><summary><b>Como fazer — passo a passo</b></summary><p><b>Preparação:</b> ${g.setup||'Ajusta o equipamento e encontra uma posição estável.'}</p><p><b>Execução:</b> ${g.steps||e.how}</p><p><b>Respiração:</b> ${g.breathing||'Respira de forma controlada durante o movimento.'}</p><p><b>Dica técnica:</b> ${g.cues||e.how}</p></details><details><summary>Erros + alternativa</summary><p class="muted"><b>Evita:</b> ${e.mistakes}<br><b>Alternativa:</b> ${e.alt}</p></details><table class="sets"><thead><tr><th>Série</th><th>kg</th><th>reps</th><th>✓</th></tr></thead><tbody>${rows}</tbody></table><div class="row" style="margin-top:8px"><button class="primary rest" data-sec="${e.rest}">⏱ Descanso</button><button class="success mark" data-id="${e.id}" data-date="${date}">${done?'Concluído':'Concluir exercício'}</button></div></div></div>`}
+function todayDay(){if(!state.plan.length)return null;let idx=((new Date().getDay()+6)%7)%state.plan.length;return state.plan[idx]}
+function renderHome(){let d=todayDay(),date=today();document.getElementById('todayTitle').textContent=d?`Dia ${d.day} — ${d.name}`:'Ainda sem plano';document.getElementById('todayMeta').textContent=d?`${d.exercises.length} exercícios • ${state.profile.duration} min • ${state.profile.goal==='strength'?'força':state.profile.goal==='fat'?'perda de gordura':state.profile.goal==='fitness'?'fitness':'hipertrofia'}`:'';let done=d?d.exercises.filter(x=>state.completed[date+'_'+x.id]).length:0,total=d?.exercises.length||0;document.getElementById('todayBar').style.width=(total?done/total*100:0)+'%';document.getElementById('todayProgress').textContent=`${done}/${total} exercícios concluídos`;document.getElementById('coachAdvice').textContent=advice();document.getElementById('todayExercises').innerHTML=d?d.exercises.map(x=>exCard(x,date)).join(''):'<div class="card">Cria o teu plano personalizado em <b>Meu plano</b>.</div>';let s=stats();document.getElementById('sW').textContent=s.w;document.getElementById('sV').textContent=Math.round(s.v);document.getElementById('sS').textContent=s.st;document.getElementById('openToday').onclick=()=>{}}
+function renderPlan(){document.getElementById('planList').innerHTML=state.plan.length?state.plan.map(d=>`<div class="day"><div class="dayhead"><b>Dia ${d.day} — ${d.name}</b><span class="muted">${d.exercises.length} exercícios</span></div>${d.exercises.map(x=>{let e=by(x.id);return`<div class="exercise"><h3>${e.name}</h3><div class="muted tiny">${e.muscles} • ${x.sets} séries × ${x.min}-${x.max}</div></div>`}).join('')}</div>`).join(''):'<div class="card muted">Ainda não criaste um plano.</div>'}
+function renderLibrary(){let q=document.getElementById('search').value.toLowerCase();let a=EX.filter(e=>(filter==='all'||e.group===filter)&&[e.name,e.muscles,e.equip].join(' ').toLowerCase().includes(q));document.getElementById('libraryList').innerHTML=a.map(e=>{let g=GUIDE[e.id]||{};return `<div class="card"><h3>${e.name}</h3><div class="muted tiny">${e.muscles} • ${e.equip}</div><details open><summary>Como executar</summary><p><b>Preparação:</b> ${g.setup||'Ajusta o equipamento e adota uma posição estável.'}</p><p><b>Execução:</b> ${g.steps||e.how}</p><p><b>Respiração:</b> ${g.breathing||'Respira de forma controlada.'}</p><p><b>Dica:</b> ${g.cues||''}</p></details><details><summary>Erros + alternativa</summary><p class="muted"><b>Evita:</b> ${e.mistakes}<br><b>Alternativa:</b> ${e.alt}</p></details></div>`}).join('')}
+function renderProgress(){let s=stats();['pW','pV','pS'].forEach((id,i)=>document.getElementById(id).textContent=[s.w,Math.round(s.v),s.st][i]);document.getElementById('pE').textContent=new Set(state.logs.flatMap(x=>x.entries.map(e=>e.id))).size;let pr={};state.logs.forEach(l=>l.entries.forEach(x=>{if(x.weight&&(!pr[x.id]||x.weight>pr[x.id].weight))pr[x.id]=x}));document.getElementById('prs').innerHTML=Object.values(pr).sort((a,b)=>b.weight-a.weight).map(x=>`<div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line)"><span>${by(x.id)?.name||x.id}</span><b>${x.weight} kg × ${x.reps||'-'}</b></div>`).join('')||'<span class="muted">Regista cargas para veres recordes.</span>';document.getElementById('history').innerHTML=state.logs.slice().reverse().map(l=>`<div style="padding:9px 0;border-bottom:1px solid var(--line)"><b>${label(l.date)}</b> — ${l.name}<br><span class="muted">${l.sets} séries • ${Math.round(l.volume)} kg</span></div>`).join('')||'<span class="muted">Ainda não há histórico.</span>'}
+function render(){renderBuilder();renderHome();renderPlan();renderLibrary();renderProgress()}
+function switchTab(t){tab=t;document.querySelectorAll('main section').forEach(s=>s.classList.toggle('hidden',s.id!==t));document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t))}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+document.getElementById('generate').onclick=()=>{profileFromUI();generate();save();switchTab('builder');alert('Plano personalizado criado. Podes voltar a gerá-lo sempre que alterares o perfil.')};
+document.getElementById('search').oninput=renderLibrary;document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderLibrary()});
+document.addEventListener('change',e=>{
+ if(e.target.dataset.w){state.weights[e.target.dataset.w]=e.target.value;localStorage.setItem(KEY,JSON.stringify(state))}
+ if(e.target.dataset.r){let [date,id,i]=e.target.dataset.r.split('_');state.reps[date+'_'+id]=state.reps[date+'_'+id]||{};state.reps[date+'_'+id][i]=e.target.value;localStorage.setItem(KEY,JSON.stringify(state))}
+ if(e.target.dataset.check){state.completed[e.target.dataset.check]=e.target.checked;save()}
+});
+document.addEventListener('click',e=>{
+let m=e.target.closest('.mark');if(m){let d=m.dataset.date,id=m.dataset.id;state.completed[d+'_'+id]=true;let plan=todayDay()?.exercises.find(x=>x.id===id),ex=by(id),entries=[];let r=state.reps[d+'_'+id]||{};for(let i=0;i<(plan?.sets||3);i++){let reps=+r[i]||0,w=+state.weights[id]||0;if(reps||w)entries.push({id,weight:w,reps,min:ex.min,max:ex.max})}state.logs.unshift({date:d,name:todayDay()?.name||'Treino',sets:entries.length,volume:entries.reduce((a,x)=>a+x.weight*x.reps,0),entries});save()}
+let b=e.target.closest('.rest');if(b)start(+b.dataset.sec)
+});
+function start(s){timer=s;document.getElementById('timer').classList.remove('hidden');clearInterval(interval);tick();interval=setInterval(()=>{timer--;tick();if(timer<=0){clearInterval(interval);interval=null;navigator.vibrate?.([200,100,200])}},1000)}function tick(){document.getElementById('time').textContent=String(Math.floor(timer/60)).padStart(2,'0')+':'+String(timer%60).padStart(2,'0')}
+document.getElementById('minus').onclick=()=>{timer=Math.max(0,timer-30);tick()};document.getElementById('plus').onclick=()=>{timer+=30;tick()};document.getElementById('pause').onclick=()=>{if(interval){clearInterval(interval);interval=null;this.textContent='Recomeçar'}else{interval=setInterval(()=>{timer--;tick();if(timer<=0){clearInterval(interval);interval=null}},1000);this.textContent='Pausar'}};document.getElementById('closeTimer').onclick=()=>{clearInterval(interval);interval=null;document.getElementById('timer').classList.add('hidden')};
+document.getElementById('export').onclick=()=>{let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));a.download='gymplan-v3-backup.json';a.click()};
+document.getElementById('import').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);save();alert('Backup importado.')}catch{alert('Backup inválido.')}};r.readAsText(f)};
+document.getElementById('wipe').onclick=()=>{if(confirm('Apagar todos os dados?')){localStorage.removeItem(KEY);location.reload()}};
+let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;document.getElementById('install').classList.remove('hidden')});document.getElementById('install').onclick=async()=>{if(deferred){deferred.prompt();await deferred.userChoice;deferred=null}};
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js?v=6.0'));
+render();
+</script>
+<script>
+(function(){
+ const COACH_KEY='gymplan-v3';
+ function state(){try{return JSON.parse(localStorage.getItem(COACH_KEY)||'{}')}catch(e){return {}}}
+ function panel(){
+  const s=state(),logs=s.logs||[],checks=s.checkins||[],recent=logs.slice(-30);
+  const vol=recent.reduce((a,x)=>a+(+x.volume||0),0), msg=[];
+  if(checks.length){const c=checks.at(-1);if(c.energy<=2)msg.push('Energia baixa: considera reduzir uma série hoje.');if(c.sleep<=2)msg.push('Sono baixo: privilegia técnica e evita máximos.');if(c.stress>=4)msg.push('Stress elevado: mantém 1–3 repetições em reserva.');}
+  const by={};recent.forEach(x=>(by[x.name]??=[]).push(x));
+  Object.entries(by).forEach(([n,a])=>{const x=a.at(-1);if(x&&x.reps>=12&&x.kg>0)msg.push(n+': atingiste o topo da faixa; podes testar +2–5% de carga se a técnica estiver sólida.');});
+  const b=document.createElement('div');b.className='card';
+  b.innerHTML='<h2>🧠 Coach GymPlan</h2><p>'+(msg.length?msg.map(x=>'• '+x).join('<br>'):'Regista treinos e faz check-ins para receber sugestões.')+'</p><p><small>Volume das últimas '+recent.length+' séries: '+Math.round(vol)+' kg · Check-ins: '+checks.length+'</small></p>';
+  document.querySelector('#app')?.prepend(b);
+ }
+ window.addEventListener('load',()=>setTimeout(panel,100));
+})();
+</script>
+<script>
+/* GymPlan v7 — visual exercise library + alternatives */
+(function(){
+ const IMG='images/';
+ const EQUIP={
+  full:'Ginásio / pesos livres', basic:'Máquinas + pesos', home:'Casa / peso corporal'
+ };
+ const ALTS={
+  bench:['incline','pushup','shoulder'],
+  incline:['bench','pushup','shoulder'],
+  row:['lat','bench','curl'],
+  lat:['row','pushup','curl'],
+  squat:['legpress','goblet','rdl'],
+  legpress:['squat','goblet','rdl'],
+  rdl:['squat','legpress','goblet'],
+  shoulder:['incline','bench','pushup'],
+  curl:['row','lat','tri'],
+  tri:['bench','shoulder','pushup'],
+  calf:['legpress','squat','goblet'],
+  plank:['deadbug','pushup','goblet'],
+  pushup:['bench','incline','shoulder'],
+  goblet:['squat','legpress','rdl'],
+  deadbug:['plank','pushup','goblet']
+ };
+ const REAL_IMG={
+  bench:'https://upload.wikimedia.org/wikipedia/commons/4/47/Personal_training_instruction_for_Bench_press.jpg',
+  lat:'https://upload.wikimedia.org/wikipedia/commons/3/38/Girl_doing_lat_pulldown_exercise.jpg',
+  legpress:'https://upload.wikimedia.org/wikipedia/commons/7/71/Leg_Press.jpg',
+  shoulder:'https://upload.wikimedia.org/wikipedia/commons/2/23/Shoulder_Press.jpg',
+  plank:'https://upload.wikimedia.org/wikipedia/commons/e/ee/Plank.jpg',
+  curl:'https://upload.wikimedia.org/wikipedia/commons/b/bd/Bicep_Curl.jpg',
+  rdl:'https://upload.wikimedia.org/wikipedia/commons/d/da/US_Navy_100514-N-0475R-578_Builder_2nd_Class_Eric_Clark%2C_from_Belding%2C_Mich.%2C_assigned_to_Naval_Mobile_Construction_Battalion_%28NMCB%29_5.jpg',
+  pushup:'https://upload.wikimedia.org/wikipedia/commons/4/4a/Push-up_session.jpg',
+  squat:'https://upload.wikimedia.org/wikipedia/commons/8/84/Squatting.jpg',
+  calf:'https://upload.wikimedia.org/wikipedia/commons/9/98/Eccentric_Exercise.png'
+ };
+ function img(id){return REAL_IMG[id]||IMG+id+'.svg'}
+ function imgFallback(id){return ` onerror="this.onerror=null;this.src='${IMG}${id}.svg'"`}
+ function altCards(id){
+   return (ALTS[id]||[]).map(a=>{const x=by(a);return x?`<div class="alt-card" data-open-ex="${a}"><img src="${img(a)}"${imgFallback(a)} alt="${x.name}"><div>${x.name}<br><span class="muted tiny">${x.muscles}</span></div></div>`:''}).join('');
+ }
+ function openExercise(id){
+   const e=by(id); if(!e)return;
+   const g=GUIDE[id]||{};
+   let old=document.getElementById('gp-modal'); old?.remove();
+   const m=document.createElement('div');m.id='gp-modal';m.className='modal-bg';
+   m.innerHTML=`<div class="modal">
+    <button class="modal-close" id="gp-close">✕</button>
+    <h2>${e.name}</h2><div class="muted">${e.muscles}</div>
+    <img class="visual-hero" src="${img(id)}"${imgFallback(id)} alt="${e.name}">
+    <p><span class="pill">${EQUIP[e.equip]||e.equip}</span> <span class="pill">${e.min}-${e.max} reps</span> <span class="pill">${e.rest}s descanso</span></p>
+    <details open><summary>1. Preparação</summary><p>${g.setup||'Ajusta o equipamento e encontra uma posição estável.'}</p></details>
+    <details open><summary>2. Execução</summary><p>${g.steps||e.how}</p></details>
+    <details><summary>3. Respiração e dica técnica</summary><p><b>Respiração:</b> ${g.breathing||'Respira de forma controlada.'}</p><p><b>Dica:</b> ${g.cues||''}</p></details>
+    <details><summary>⚠️ Erros a evitar</summary><p>${e.mistakes}</p></details>
+    <h3 style="margin-top:16px">Alternativas a este exercício</h3>
+    <p class="muted tiny">Se a máquina estiver ocupada, não existir no teu ginásio ou simplesmente preferires variar.</p>
+    <div class="alt-grid">${altCards(id)}</div>
+   </div>`;
+   document.body.appendChild(m);
+   document.getElementById('gp-close').onclick=()=>m.remove();
+   m.addEventListener('click',e=>{if(e.target===m)m.remove();const a=e.target.closest('[data-open-ex]');if(a)openExercise(a.dataset.openEx)});
+ }
+ window.GymPlanOpenExercise=openExercise;
+
+ function visualBlock(e,item,date,done,rows){
+   const g=GUIDE[e.id]||{};
+   return `<div class="day"><div class="exercise ${done?'done':''}">
+     <div class="exercise-visual">
+       <img class="exercise-thumb" data-open-ex="${e.id}" src="${img(e.id)}"${imgFallback(e.id)} alt="${e.name}">
+       <div><h3 class="exercise-title">${e.name}</h3><div class="muted tiny">${e.muscles}</div>
+       <div class="equip-badge">▣ ${EQUIP[e.equip]||e.equip}</div><div style="margin-top:5px"><span class="pill">${item.min}-${item.max} reps • ${item.rest}s</span></div></div>
+     </div>
+     <div class="exercise-detail">
+       <details open><summary>Como fazer — passo a passo</summary>
+         <p><b>Preparação:</b> ${g.setup||'Ajusta o equipamento e encontra uma posição estável.'}</p>
+         <p><b>Execução:</b> ${g.steps||e.how}</p>
+         <p><b>Respiração:</b> ${g.breathing||'Respira de forma controlada durante o movimento.'}</p>
+         <p><b>Dica técnica:</b> ${g.cues||e.how}</p>
+       </details>
+       <details><summary>Alternativas</summary><div class="alt-grid">${altCards(e.id)}</div></details>
+       <details><summary>⚠️ Erros a evitar</summary><p>${e.mistakes}</p></details>
+     </div>
+     <table class="sets"><thead><tr><th>Série</th><th>kg</th><th>reps</th><th>✓</th></tr></thead><tbody>${rows}</tbody></table>
+     <div class="row" style="margin-top:8px"><button class="primary rest" data-sec="${e.rest}">⏱ Descanso</button><button class="success mark" data-id="${e.id}" data-date="${date}">${done?'Concluído':'Concluir exercício'}</button><button data-open-ex="${e.id}">Ver imagem + instruções</button></div>
+   </div></div>`;
+ }
+
+ window.exCard=function(item,date){
+   const e=by(item.id),done=!!state.completed[date+'_'+e.id],w=state.weights[e.id]||'',rr=state.reps[date+'_'+e.id]||'';
+   const rows=Array.from({length:item.sets},(_,i)=>`<tr><td>${i+1}</td><td><input data-w="${e.id}" value="${w}" inputmode="decimal" placeholder="kg"></td><td><input data-r="${date}_${e.id}_${i}" value="${rr[i]||''}" inputmode="numeric" placeholder="${item.min}-${item.max}"></td><td><input class="check" type="checkbox" data-check="${date}_${e.id}" ${done?'checked':''}></td></tr>`).join('');
+   return visualBlock(e,item,date,done,rows);
+ };
+
+ window.renderHome=function(){
+   let d=todayDay(),date=today();
+   document.getElementById('todayTitle').textContent=d?`Dia ${d.day} — ${d.name}`:'Ainda sem plano';
+   document.getElementById('todayMeta').textContent=d?`${d.exercises.length} exercícios • ${state.profile.duration} min • ${state.profile.goal==='strength'?'força':state.profile.goal==='fat'?'perda de gordura':state.profile.goal==='fitness'?'fitness':'hipertrofia'}`:'';
+   let done=d?d.exercises.filter(x=>state.completed[date+'_'+x.id]).length:0,total=d?.exercises.length||0;
+   document.getElementById('todayBar').style.width=(total?done/total*100:0)+'%';
+   document.getElementById('todayProgress').textContent=`${done}/${total} exercícios concluídos`;
+   document.getElementById('coachAdvice').textContent=advice();
+   document.getElementById('todayExercises').innerHTML=d?d.exercises.map(x=>window.exCard(x,date)).join(''):'<div class="card">Cria o teu plano personalizado em <b>Meu plano</b>.</div>';
+   let s=stats();document.getElementById('sW').textContent=s.w;document.getElementById('sV').textContent=Math.round(s.v);document.getElementById('sS').textContent=s.st;
+ };
+ window.renderPlan=function(){
+   document.getElementById('planList').innerHTML=state.plan.length?state.plan.map(d=>`<div class="day"><div class="dayhead"><b>Dia ${d.day} — ${d.name}</b><span class="muted">${d.exercises.length} exercícios</span></div>${d.exercises.map(x=>{let e=by(x.id);return`<div class="exercise"><div class="exercise-visual"><img class="exercise-thumb" data-open-ex="${e.id}" src="${img(e.id)}"${imgFallback(e.id)} alt="${e.name}"><div><h3>${e.name}</h3><div class="muted tiny">${e.muscles}</div><span class="pill">${x.sets} séries × ${x.min}-${x.max}</span></div></div></div>`}).join('')}</div>`).join(''):'<div class="card muted">Ainda não criaste um plano.</div>';
+ };
+ window.renderLibrary=function(){
+   let q=document.getElementById('search').value.toLowerCase();
+   let a=EX.filter(e=>(filter==='all'||e.group===filter)&&[e.name,e.muscles,e.equip].join(' ').toLowerCase().includes(q));
+   document.getElementById('libraryList').innerHTML=a.map(e=>`<div class="card"><div class="exercise-visual"><img class="exercise-thumb" data-open-ex="${e.id}" src="${img(e.id)}"${imgFallback(e.id)} alt="${e.name}"><div><h3>${e.name}</h3><div class="muted tiny">${e.muscles}</div><span class="equip-badge">▣ ${EQUIP[e.equip]||e.equip}</span></div></div><div class="row" style="margin-top:10px"><button class="primary" data-open-ex="${e.id}">📷 Ver exercício</button><span class="pill">${e.min}-${e.max} reps</span></div></div>`).join('');
+ };
+ document.addEventListener('click',function(e){const a=e.target.closest('[data-open-ex]');if(a){e.preventDefault();openExercise(a.dataset.openEx)}});
+ window.addEventListener('load',()=>setTimeout(()=>{window.renderHome();window.renderPlan();window.renderLibrary()},120));
+})();
+</script>
+</body></html>
